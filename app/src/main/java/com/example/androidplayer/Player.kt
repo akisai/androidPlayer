@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.navigation_activity.*
 import kotlinx.android.synthetic.main.player.*
 import kotlinx.android.synthetic.main.player_min.*
 import org.jetbrains.anko.longToast
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private lateinit var mediaPlayer: MediaPlayer
@@ -32,12 +34,13 @@ private lateinit var handlerMusic: Handler
 private lateinit var handlerTime: Handler
 private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 private lateinit var audioManager: AudioManager
+private lateinit var soundsSuffle: ArrayList<Music?>
 private var repeatAll = false
 private var position = 0
 private var state = 0
 private var idx = 0
 private const val dX = 165f
-private const val dY = 130f
+private const val dY = 128f
 
 fun Activity.initPlayer() {
 
@@ -86,14 +89,16 @@ private fun Activity.minPlayer() {
             val alphaColor = if (255f * (1f - alpha) > 255f * 0.9f) 255f * (1f - alpha) else 255f * 0.9f
 
             val rectangleRad = if (slideOffset > 0.2f) 13f * scaleDp else slideOffset * scaleDp * 65f
-            rectangleSheet.cornerRadii = floatArrayOf(rectangleRad, rectangleRad, rectangleRad, rectangleRad, 0f, 0f, 0f, 0f)
+            rectangleSheet.cornerRadii =
+                floatArrayOf(rectangleRad, rectangleRad, rectangleRad, rectangleRad, 0f, 0f, 0f, 0f)
             rectangleSheet.setColor(Color.argb(alphaColor.toInt(), 255, 255, 255))
             bottom_sheet.background = rectangleSheet
 
             rectangleContent.cornerRadius = rectangleRad
             bottom_sheet_content.background = rectangleContent
 
-            navigation.animate().translationY(46f * scaleDp * slideOffset).setDuration(0).start()
+            navigation.animate().alpha(1f - slideOffset).translationY(46f * scaleDp * slideOffset).setDuration(0)
+                .start()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 bottom_sheet_content.foreground = ColorDrawable(Color.argb((slideOffset * 240).toInt(), 132, 133, 137))
                 navigation.foreground = ColorDrawable(Color.argb((slideOffset * 240).toInt(), 255, 255, 255))
@@ -108,7 +113,7 @@ private fun Activity.minPlayer() {
             player_border.animate().alpha(alpha).setDuration(0).start()
             player_min.animate().alpha(alpha).setDuration(0).start()
             close.animate().alpha(1f - alpha).setDuration(0).start()
-            player.animate().translationY(offsetElements).setDuration(0).start()
+            player.animate().alpha(slideOffset).translationY(offsetElements).setDuration(0).start()
             album.animate().scaleX(scale).scaleY(scale).translationY(offsetY).translationX(offsetX).setDuration(0)
                 .start()
         }
@@ -121,13 +126,15 @@ private fun Activity.minPlayer() {
 }
 
 private fun Activity.player() {
+    repeat.clipToOutline = true
+    shuffle.clipToOutline = true
     album.clipToOutline = true
     bottom_sheet_content.clipToOutline = true
     bottom_sheet.clipToOutline = true
     sounds = ArrayList()
+    soundsSuffle = ArrayList()
     mediaPlayer = MediaPlayer()
     music_seek.isEnabled = false
-
     mediaPlayer.setOnCompletionListener {
         play.setImageResource(R.drawable.ic_action_play)
         play_min.setImageResource(R.drawable.ic_action_play)
@@ -137,6 +144,7 @@ private fun Activity.player() {
     next()
     previous()
     repeat()
+    shuffle()
 }
 
 private fun Activity.volumeController() {
@@ -186,24 +194,32 @@ private fun Activity.musicController() {
 
 
     music_seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        var state = false
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             if (fromUser) {
                 position = progress
                 time_to.text = "-".plus(getTime(mediaPlayer.duration - position))
                 time_left.text = getTime(position)
-                if (mediaPlayer.isPlaying) {
-                    stop()
-                    mediaPlayer.seekTo(position)
-                    start()
-                } else
-                    mediaPlayer.seekTo(position)
+
             }
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            state = mediaPlayer.isPlaying
+            if (state) {
+                handlerMusic.removeCallbacks(runnableMusic)
+                handlerTime.removeCallbacks(runnableTime)
+            }
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            if (state) {
+                mediaPlayer.pause()
+                mediaPlayer.seekTo(position)
+                start()
+            } else {
+                mediaPlayer.seekTo(position)
+            }
         }
     })
 
@@ -230,6 +246,7 @@ fun Activity.basicLogic(song: Music?) {
         next.isEnabled = true
         next_min.isEnabled = true
         previous.isEnabled = true
+        shuffle.isEnabled = true
     }
     idx = 0
     if (idx < sounds.size) {
@@ -349,8 +366,8 @@ private fun Activity.repeat() {
         when (state) {
             1 -> {
                 repeatAll = true
-                repeat.setBackgroundColor(ContextCompat.getColor(this, R.color.MusicRed))
-                repeat.setTextColor(Color.argb(255, 255, 255, 255))
+                repeat.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button_pressed)
+                repeat.setTextColor(Color.WHITE)
                 val img = ContextCompat.getDrawable(this, R.drawable.ic_action_repeat_pressed)
                 img?.setBounds(0, 0, 60, 60)
                 repeat.setCompoundDrawables(
@@ -372,7 +389,7 @@ private fun Activity.repeat() {
                 )
             }
             else -> {
-                repeat.setBackgroundColor(ContextCompat.getColor(this, R.color.MusicGrey))
+                repeat.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button)
                 repeat.setTextColor(ContextCompat.getColor(this, R.color.MusicRed))
                 val img = ContextCompat.getDrawable(this, R.drawable.ic_action_repeat)
                 img?.setBounds(0, 0, 60, 60)
@@ -388,7 +405,39 @@ private fun Activity.repeat() {
     }
 }
 
-private fun shuffle() {
+private fun Activity.shuffle() {
+    var shuffleState = false
+    shuffle.isEnabled = false
+    shuffle.setOnClickListener {
+        shuffleState = !shuffleState
+        if (shuffleState) {
+            soundsSuffle = sounds
+            sounds.shuffle()
+            shuffle.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button_pressed)
+            shuffle.setTextColor(Color.WHITE)
+            val img = ContextCompat.getDrawable(this, R.drawable.ic_action_shuffle_pressed)
+            img?.setBounds(0, 0, 60, 60)
+            shuffle.setCompoundDrawables(
+                img,
+                null,
+                null,
+                null
+            )
+
+        } else {
+            sounds = soundsSuffle
+            shuffle.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button)
+            shuffle.setTextColor(ContextCompat.getColor(this, R.color.MusicRed))
+            val img = ContextCompat.getDrawable(this, R.drawable.ic_action_shuffle)
+            img?.setBounds(0, 0, 60, 60)
+            shuffle.setCompoundDrawables(
+                img,
+                null,
+                null,
+                null
+            )
+        }
+    }
 
 }
 

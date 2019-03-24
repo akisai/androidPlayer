@@ -97,21 +97,24 @@
             android:textAlignment="textEnd" android:translationX="-15dp"/>
     <Button
             android:text="@string/repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/repeat" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="40dp"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/volume_seek"
             android:drawableStart="@drawable/ic_action_repeat" android:textColor="@color/MusicRed"
-            android:background="@color/MusicGrey"/>
+            android:background="@drawable/rectangle_button" android:paddingStart="5dp" android:paddingEnd="5dp"/>
     <Button
             android:text="@string/shuffle"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/shuffle" android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="40dp" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/volume_seek" android:drawableStart="@drawable/ic_action_shuffle"
-            android:textColor="@color/MusicRed" android:background="@color/MusicGrey"/>
+            android:textColor="@color/MusicRed" android:background="@drawable/rectangle_button"
+            android:paddingEnd="5dp" android:paddingStart="5dp"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -5,9 +5,4 @@
             <solid android:color="@color/White" />
         </shape>
     </item>
-    <item android:top="1dp">
-        <shape android:shape="line">
-            <solid android:color="@color/MusicGrey" />
-        </shape>
-    </item>
 </layer-list>

@@ -41,9 +41,9 @@ class SoundAdapter(private val context: Context?, private val music: MutableList
         artist.text = music.artist
         duration.text = music.duration
         size.text = music.size
+        image.clipToOutline = true
         if (music.albumArt.image != null)
             image.setImageBitmap(music.albumArt.image)
-
         return view
     }
 }

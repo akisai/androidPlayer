@@ -2,6 +2,7 @@ package com.example.androidplayer
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -9,12 +10,17 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import com.example.androidplayer.fragments.MediaFragment
 import com.example.androidplayer.utils.replaceFragment
 import kotlinx.android.synthetic.main.navigation_activity.*
 import kotlinx.android.synthetic.main.player.*
+import android.view.KeyCharacterMap
+import android.view.ViewConfiguration
+
+
 
 class NavigationActivity : AppCompatActivity() {
 
@@ -39,14 +45,19 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.navigation_activity)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+
+        Log.e("nav", hasNavBar(resources).toString())
         checkPermissions()
         initPlayer()
         replaceFragment(MediaFragment(), true, R.id.bottom_sheet_content)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    fun hasNavBar(resources: Resources): Boolean {
+        val id = resources.getIdentifier("config_showNavigationBar", "bool", "android")
+        return id > 0 && resources.getBoolean(id)
     }
 
     private fun checkPermissions() {
