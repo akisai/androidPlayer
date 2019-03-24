@@ -12,11 +12,14 @@
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                      xmlns:app="http://schemas.android.com/apk/res-auto"
                                                      android:layout_width="match_parent"
-                                                     android:layout_height="644dp"
+                                                     android:layout_height="684dp"
                                                      android:id="@+id/navigation_content"
-                                                     app:layout_constraintBottom_toTopOf="@+id/navigation"
                                                      app:layout_constraintTop_toTopOf="parent"
-                                                     android:background="@color/colorPrimaryDark">
+                                                     android:background="@color/colorPrimaryDark"
+                                                     app:layout_constraintBottom_toBottomOf="parent"
+                                                     app:layout_constraintStart_toStartOf="parent"
+                                                     app:layout_constraintEnd_toEndOf="parent"
+    >
 
         <include layout="@layout/bottom_sheet_content"/>
 
@@ -29,7 +32,7 @@
             android:id="@+id/navigation"
             android:layout_width="0dp"
             android:layout_height="46dp"
-            android:background="?android:attr/windowBackground"
+            android:background="@drawable/bottom_navigation_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -38,14 +41,7 @@
             app:itemIconSize="24dp"
             app:menu="@menu/navigation" android:paddingBottom="3dp">
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/MusicGrey"
-                android:id="@+id/navigation_border"
-                android:layout_marginTop="0dp">
 
-        </View>
 
     </android.support.design.widget.BottomNavigationView>
 

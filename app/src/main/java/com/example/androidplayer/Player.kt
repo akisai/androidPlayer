@@ -18,6 +18,7 @@ import com.example.androidplayer.utils.Music
 import com.example.androidplayer.utils.getTime
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.bottom_sheet_content.*
+import kotlinx.android.synthetic.main.navigation_activity.*
 import kotlinx.android.synthetic.main.player.*
 import kotlinx.android.synthetic.main.player_min.*
 import org.jetbrains.anko.longToast
@@ -35,12 +36,13 @@ private var repeatAll = false
 private var position = 0
 private var state = 0
 private var idx = 0
-private const val dX = 440f
-private const val dY = 290f
+private const val dX = 165f
+private const val dY = 130f
 
 fun Activity.initPlayer() {
 
     bottom_sheet.visibility = View.INVISIBLE
+
     minPlayer()
     player()
     volumeController()
@@ -50,8 +52,13 @@ fun getMediaPlayer() = mediaPlayer
 fun getAudioManager() = audioManager
 
 private fun Activity.minPlayer() {
-    album.translationX = -dX
-    album.translationY = -dY
+    val scaleDp = resources.displayMetrics.density
+    album.translationX = -dX * scaleDp
+    album.translationY = -dY * scaleDp
+    val rectangleSheet = GradientDrawable()
+    val rectangleContent = GradientDrawable()
+    rectangleSheet.shape = GradientDrawable.RECTANGLE
+    rectangleContent.shape = GradientDrawable.RECTANGLE
     bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(bottom_sheet)
     bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(p0: View, newState: Int) {
@@ -71,21 +78,26 @@ private fun Activity.minPlayer() {
 
         override fun onSlide(p0: View, slideOffset: Float) {
             val scale = 0.5f + slideOffset * 1.7f
-            val offsetX = dX * slideOffset - dX
-            val offsetY = dY * slideOffset - dY
-            val offsetElements = 400f * slideOffset - 400f
+            val offsetX = (dX * slideOffset - dX) * scaleDp
+            val offsetY = (dY * slideOffset - dY) * scaleDp
+            val offsetElements = (240f * slideOffset - 240f) * scaleDp
             val offsetAlpha = 1f - slideOffset * 4f
             val alpha = if (offsetAlpha > 0) offsetAlpha else 0f
             val alphaColor = if (255f * (1f - alpha) > 255f * 0.9f) 255f * (1f - alpha) else 255f * 0.9f
-            val rectangle = GradientDrawable()
-            rectangle.shape = GradientDrawable.RECTANGLE
-            rectangle.cornerRadius = if (slideOffset > 0.2f) 35f else slideOffset * 175f
-            bottom_sheet_content.background = rectangle
-            rectangle.setColor(Color.argb(alphaColor.toInt(), 255, 255, 255))
-            bottom_sheet.background = rectangle
+
+            val rectangleRad = if (slideOffset > 0.2f) 13f * scaleDp else slideOffset * scaleDp * 65f
+            rectangleSheet.cornerRadii = floatArrayOf(rectangleRad, rectangleRad, rectangleRad, rectangleRad, 0f, 0f, 0f, 0f)
+            rectangleSheet.setColor(Color.argb(alphaColor.toInt(), 255, 255, 255))
+            bottom_sheet.background = rectangleSheet
+
+            rectangleContent.cornerRadius = rectangleRad
+            bottom_sheet_content.background = rectangleContent
+
+            navigation.animate().translationY(46f * scaleDp * slideOffset).setDuration(0).start()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 bottom_sheet_content.foreground = ColorDrawable(Color.argb((slideOffset * 240).toInt(), 132, 133, 137))
-                if(slideOffset > 0.5f)
+                navigation.foreground = ColorDrawable(Color.argb((slideOffset * 240).toInt(), 255, 255, 255))
+                if (slideOffset > 0.5f)
                     window.decorView.systemUiVisibility = 0
                 else
                     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -96,8 +108,6 @@ private fun Activity.minPlayer() {
             player_border.animate().alpha(alpha).setDuration(0).start()
             player_min.animate().alpha(alpha).setDuration(0).start()
             close.animate().alpha(1f - alpha).setDuration(0).start()
-
-            //bottom_sheet.setBackgroundColor(Color.argb(alphaColor.toInt(), 255, 255, 255))
             player.animate().translationY(offsetElements).setDuration(0).start()
             album.animate().scaleX(scale).scaleY(scale).translationY(offsetY).translationX(offsetX).setDuration(0)
                 .start()
