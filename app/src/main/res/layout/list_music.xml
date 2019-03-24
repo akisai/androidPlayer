@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             android:id="@+id/list_music"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="60dp">
+
+    <TextView
+            android:text="@string/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/artist"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/albumArt"
+            android:layout_marginStart="28dp" android:textStyle="bold" android:textSize="18sp"/>
+    <TextView
+            android:text="@string/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/duration"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"
+    />
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp" app:srcCompat="@drawable/images"
+            android:id="@+id/albumArt" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:contentDescription="@string/image"/>
+    <TextView
+            android:text="@string/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/atitle"
+            app:layout_constraintStart_toEndOf="@+id/albumArt"
+            android:layout_marginStart="32dp" android:layout_marginTop="3dp"
+            app:layout_constraintTop_toBottomOf="@+id/artist"/>
+    <TextView
+            android:text="@string/test"
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:id="@+id/size" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/duration" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent" android:textSize="13sp"
+            app:layout_constraintVertical_bias="0.0"/>
+</android.support.constraint.ConstraintLayout>

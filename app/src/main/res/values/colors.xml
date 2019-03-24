@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="MusicRed">#EA455A</color>
+    <color name="MusicDark">#848589</color>
+    <color name="MusicGrey">#F8F7FC</color>
+    <color name="MusicGreyDark">#A2A2A2</color>
+    <color name="WhiteTransparent">#E6FFFFFF</color>
+    <color name="White">#FFFFFF</color>
+</resources>
