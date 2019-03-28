@@ -9,4 +9,5 @@
     <color name="MusicGreyDark">#A2A2A2</color>
     <color name="WhiteTransparent">#E6FFFFFF</color>
     <color name="White">#FFFFFF</color>
+    <color name="Transparent">#00FFFFFF</color>
 </resources>
