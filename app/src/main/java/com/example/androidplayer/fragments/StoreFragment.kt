@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.media_fragment.*
 import java.text.DecimalFormat
 
 
-class MediaFragment : Fragment() {
+class StoreFragment : Fragment() {
 
     private lateinit var list: MutableList<Music>
     private lateinit var adapter: SoundAdapter

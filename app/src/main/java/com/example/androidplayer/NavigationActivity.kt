@@ -13,13 +13,12 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
-import com.example.androidplayer.fragments.MediaFragment
+import com.example.androidplayer.fragments.DashboardFragment
+import com.example.androidplayer.fragments.PlaylistFragment
+import com.example.androidplayer.fragments.StoreFragment
 import com.example.androidplayer.utils.replaceFragment
 import kotlinx.android.synthetic.main.navigation_activity.*
 import kotlinx.android.synthetic.main.player.*
-import android.view.KeyCharacterMap
-import android.view.ViewConfiguration
-
 
 
 class NavigationActivity : AppCompatActivity() {
@@ -29,13 +28,15 @@ class NavigationActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_media -> {
-                replaceFragment(MediaFragment(), true, R.id.bottom_sheet_content)
+                replaceFragment(PlaylistFragment(), true, R.id.bottom_sheet_content)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
+                replaceFragment(DashboardFragment(), true, R.id.bottom_sheet_content)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
+                replaceFragment(StoreFragment(), true, R.id.bottom_sheet_content)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -48,10 +49,9 @@ class NavigationActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
 
-        Log.e("nav", hasNavBar(resources).toString())
         checkPermissions()
         initPlayer()
-        replaceFragment(MediaFragment(), true, R.id.bottom_sheet_content)
+        replaceFragment(PlaylistFragment(), true, R.id.bottom_sheet_content)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
