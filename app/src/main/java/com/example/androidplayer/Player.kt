@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.navigation_activity.*
 import kotlinx.android.synthetic.main.player.*
 import kotlinx.android.synthetic.main.player_min.*
 import org.jetbrains.anko.longToast
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -34,13 +33,13 @@ private lateinit var handlerMusic: Handler
 private lateinit var handlerTime: Handler
 private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 private lateinit var audioManager: AudioManager
-private lateinit var soundsSuffle: ArrayList<Music?>
+private lateinit var soundsShuffle: ArrayList<Music?>
 private var repeatAll = false
 private var position = 0
 private var state = 0
 private var idx = 0
 private const val dX = 165f
-private const val dY = 128f
+private const val dY = 142f
 
 fun Activity.initPlayer() {
 
@@ -132,10 +131,11 @@ private fun Activity.player() {
     bottom_sheet_content.clipToOutline = true
     bottom_sheet.clipToOutline = true
     sounds = ArrayList()
-    soundsSuffle = ArrayList()
+    soundsShuffle = ArrayList()
     mediaPlayer = MediaPlayer()
     music_seek.isEnabled = false
     mediaPlayer.setOnCompletionListener {
+        album.animate().scaleY(2.2f).scaleX(2.2f).setDuration(200L).start()
         play.setImageResource(R.drawable.ic_action_play)
         play_min.setImageResource(R.drawable.ic_action_play)
     }
@@ -276,12 +276,14 @@ private fun Activity.playLogic() {
     if (mediaPlayer.isPlaying) {
         stop()
         position = mediaPlayer.currentPosition
+        album.animate().scaleY(2.2f).scaleX(2.2f).setDuration(200L).start()
         play.setImageResource(R.drawable.ic_action_play)
         play_min.setImageResource(R.drawable.ic_action_play)
 
     } else {
         mediaPlayer.seekTo(position)
         start()
+        album.animate().scaleY(2.5f).scaleX(2.5f).setDuration(200L).start()
         play.setImageResource(R.drawable.ic_action_pause)
         play_min.setImageResource(R.drawable.ic_action_pause)
     }
@@ -411,7 +413,7 @@ private fun Activity.shuffle() {
     shuffle.setOnClickListener {
         shuffleState = !shuffleState
         if (shuffleState) {
-            soundsSuffle = sounds
+            soundsShuffle = sounds
             sounds.shuffle()
             shuffle.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button_pressed)
             shuffle.setTextColor(Color.WHITE)
@@ -425,7 +427,7 @@ private fun Activity.shuffle() {
             )
 
         } else {
-            sounds = soundsSuffle
+            sounds = soundsShuffle
             shuffle.background = ContextCompat.getDrawable(this, R.drawable.rectangle_button)
             shuffle.setTextColor(ContextCompat.getColor(this, R.color.MusicRed))
             val img = ContextCompat.getDrawable(this, R.drawable.ic_action_shuffle)
